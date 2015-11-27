@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/shop-demo.iml" filepath="$PROJECT_DIR$/shop-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop-demo-grailsPlugins.iml" filepath="$PROJECT_DIR$/shop-demo-grailsPlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shopifyApi-inplacePlugin.iml" filepath="$PROJECT_DIR$/shopifyApi-inplacePlugin.iml" />
+    </modules>
+  </component>
+</project>
