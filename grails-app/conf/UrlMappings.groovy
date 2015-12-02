@@ -7,7 +7,7 @@ class UrlMappings {
 			}
 		}
 
-		"/"(controller: 'base', action: 'grabEmail')
-		"500"(view:'/error')
+		/*"/"(controller: 'base', action: 'grabEmail')
+		"500"(view:'/error')*/
 	}
 }
