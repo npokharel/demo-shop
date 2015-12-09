@@ -9,4 +9,7 @@ interface ShopServiceInterface {
 
     def saveShopifyFields()
 
+    def getProducts()
+
+    def getTaggedProducts (String tag)
 }

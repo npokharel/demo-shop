@@ -12,6 +12,14 @@ class ShopService implements ShopServiceInterface {
     String SHOP_NAME = "narens-shop"
     String PERMANENT_TOKEN = "ed9ddf4a8b96f944fe58e9fbfb5c5df2"
 
+
+    ShopifyClient shopifyClient = new ShopifyClient(
+            SHOPIFY_API_KEY,
+            SHOPIFY_API_SECRET,
+            SHOP_NAME,
+            PERMANENT_TOKEN
+    )
+
     def saveEmail ( Shop shop) {
         shop.save()
     }
@@ -29,12 +37,12 @@ class ShopService implements ShopServiceInterface {
 
     def saveShopifyFields() {
 
-        ShopifyClient shopifyClient = new ShopifyClient(
+        /*ShopifyClient shopifyClient = new ShopifyClient(
                 SHOPIFY_API_KEY,
                 SHOPIFY_API_SECRET,
                 SHOP_NAME,
                 PERMANENT_TOKEN
-        )
+        )*/
 
         String responseText = shopifyClient.getShopService().getShop()
         JSONObject productJSON = JSON.parse(responseText)
@@ -54,5 +62,23 @@ class ShopService implements ShopServiceInterface {
             shop.save(failOnError: true)
         }
 
+    }
+
+    def getProducts (  ) {
+
+        def queryParams = [
+                "tags" : "niraj"
+        ]
+        //String responseText = shopifyClient.getShopService().getShop()
+        String responseText = shopifyClient.getProductService().searchProducts(queryParams)
+        JSONObject productJSON = JSON.parse(responseText)
+        println productJSON.toString(4)
+    }
+
+    def getTaggedProducts ( String tag) {
+        //def responseText =
+        return shopifyClient.getProductService().taggedProducts( tag )
+        //JSONObject productJSON = JSON.parse(responseText)
+        //return productJSON.toString()
     }
 }

@@ -1,0 +1,29 @@
+
+<wicket:extend>
+
+    This page demonstrates a simple OrderedRepeatingView.
+    You simply add your items to the repeating view and its body
+    markup will be used to render each one in the order added.
+    <br/><br/>
+
+    <table cellspacing="0" class="dataview">
+        <tr>
+            <th>ID</th>
+            <th>tags</th>
+            <th>handle</th>
+            <th>vendor</th>
+            <th>published_scope</th>
+            <th>title</th>
+        </tr>
+        <tr wicket:id="repeating">
+            <td><span wicket:id="id">[id]</span></td>
+            <td><span wicket:id="tags">[tags]</span> </td>
+            <td><span wicket:id="handle">[handle]</span></td>
+            <td><span wicket:id="vendor">[vendor]</span></td>
+            <td><span wicket:id="published_scope">[published_scope]</span></td>
+            <td><span wicket:id="title">[title]</span></td>
+        </tr>
+    </table>
+
+</wicket:extend>
+
