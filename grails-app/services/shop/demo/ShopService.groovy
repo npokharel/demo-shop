@@ -1,8 +1,10 @@
 package shop.demo
 
 import grails.converters.JSON
+import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 import shopify.api.ShopifyClient
+
 class ShopService implements ShopServiceInterface {
 
     static transactional = true
@@ -25,7 +27,6 @@ class ShopService implements ShopServiceInterface {
     }
 
     def getEmail ( ) {
-        //return Shop.get(1)?.email
         return Shop.findByDomain( SHOP_NAME + '.myshopify.com')?.email
     }
 
@@ -36,13 +37,6 @@ class ShopService implements ShopServiceInterface {
     }
 
     def saveShopifyFields() {
-
-        /*ShopifyClient shopifyClient = new ShopifyClient(
-                SHOPIFY_API_KEY,
-                SHOPIFY_API_SECRET,
-                SHOP_NAME,
-                PERMANENT_TOKEN
-        )*/
 
         String responseText = shopifyClient.getShopService().getShop()
         JSONObject productJSON = JSON.parse(responseText)
@@ -64,21 +58,73 @@ class ShopService implements ShopServiceInterface {
 
     }
 
-    def getProducts (  ) {
+    /**
+     * Returns the products containing tag or comma seperated tags
+     * @param tag
+     * @return
+     */
+    def getTaggedProducts ( String tag ) {
 
-        def queryParams = [
-                "tags" : "niraj"
-        ]
-        //String responseText = shopifyClient.getShopService().getShop()
-        String responseText = shopifyClient.getProductService().searchProducts(queryParams)
-        JSONObject productJSON = JSON.parse(responseText)
-        println productJSON.toString(4)
-    }
+        //hashmap to get the max 250 results allowed per page to deal with the same product name string being present in lots of products in the store
+        HashMap<String, String> queryParams = new HashMap<String, String>();
 
-    def getTaggedProducts ( String tag) {
-        //def responseText =
-        return shopifyClient.getProductService().taggedProducts( tag )
-        //JSONObject productJSON = JSON.parse(responseText)
-        //return productJSON.toString()
+        JSONObject result = new JSONObject() //final result object
+        JSONArray productsArray = new JSONArray()
+
+        def count = shopifyClient.getProductService().getCount()
+
+        //split tag's csv to string Array
+        String [] tagArray
+        boolean multiple = false
+        if(tag.contains(",")){
+            tagArray = tag.split(",")
+            multiple = true
+        }
+
+        if (count > 250 ) {
+            //TODO verify this logic queryParams stuffs
+            def allProducts = shopifyClient.getProductService().getProducts(queryParams)
+            JSONObject allJson = grails.converters.deep.JSON.parse(allProducts)
+
+            long numLoops = count/250
+            for (int i = 1; i<= numLoops; i++) {
+                queryParams.put("page", i)
+                queryParams.put("limit", "250")
+                allJson = grails.converters.deep.JSON.parse(allProducts)
+                result = new JSONObject()
+                productsArray = new JSONArray()
+                allJson.products.each {
+                    if (multiple) {
+                        tagArray.each{t->
+                            if (it.tags.contains(t.trim())) productsArray.addAll(it)
+
+                        }
+                    }else {
+                        if(it.tags.contains(tag)) productsArray.addAll(it)
+                    }
+                }
+                result.put ('products', productsArray)
+            }
+        }else {
+
+            queryParams.put("page", "1") //just the first page
+            queryParams.put("limit", "250")
+
+            def allProducts = shopifyClient.getProductService().getProducts(queryParams)
+            JSONObject allJson = grails.converters.deep.JSON.parse(allProducts)
+
+            allJson.products.each {
+                if (multiple) {
+                    tagArray.each{t->
+                        if (it.tags.contains(t.trim())) productsArray.addAll(it)
+                    }
+                }else {
+                    if(it.tags.contains(tag)) productsArray.addAll(it)
+                }
+            }
+            result.put ('products', productsArray)
+        }
+
+        return result
     }
 }

@@ -1,4 +1,4 @@
-package admin
+package products
 
 import common.BaseWebPage
 import org.apache.wicket.markup.html.basic.Label;
@@ -6,7 +6,6 @@ import org.apache.wicket.markup.html.list.AbstractItem;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.request.mapper.parameter.PageParameters
 import org.apache.wicket.spring.injection.annot.SpringBean
-import grails.converters.deep.JSON
 import shop.demo.ShopServiceInterface
 
 public class ProductsPage extends BaseWebPage  {
@@ -19,9 +18,8 @@ public class ProductsPage extends BaseWebPage  {
         add(repeating);
 
         String tag = parameters.get("tag")
-        def products = shopService.getTaggedProducts(tag)
-        def productJson = JSON.parse(products)
 
+        def productJson  = shopService.getTaggedProducts(tag)
         productJson.products.each {
 
             AbstractItem item = new AbstractItem(repeating.newChildId())
@@ -34,9 +32,6 @@ public class ProductsPage extends BaseWebPage  {
             item.add(new Label("published_scope", it.published_scope))
             item.add(new Label("title", it.title))
 
-
         }
-
-
     }
 }

@@ -1,7 +1,6 @@
 package home
 import common.BaseWebPage
-
-import admin.ProductsPage
+import products.ProductsPage
 
 import org.apache.wicket.request.mapper.parameter.PageParameters
 import org.apache.wicket.markup.html.basic.Label
@@ -59,10 +58,11 @@ public class LoginForm extends Form{
     public void onSubmit(){
         //String passwordText = properties.getString("password");
         String emailText = properties.getString("email");
-        String tagText = properties.getString("enterTag")
+        def tagText = properties.get("enterTag")
         println("tagText TEXT ENTERED: " + tagText);
 
         if(tagText != null ) {
+            //using put throwing exception
             setResponsePage(ProductsPage.class ,  new PageParameters("tag=" + tagText))
         }else {
             error( " Email cannot be blank !!!")
